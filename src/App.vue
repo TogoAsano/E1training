@@ -24,13 +24,14 @@
           <th>{{item.id}}</th>
           <td class="foodName">{{item.food}}</td>
           <td class="changeButton">
-            <button @click="changeState(item)">
-             {{item.state}}
+            <button @click="changeStatus(item)">
+             {{lavels[item.status]}}
             </button>
           </td>
           <td class="changeButton">
             <button @click.ctrl="remove(item)">
-              削除</button>
+              削除
+            </button>
           </td>
         </tr>
       </tbody>
@@ -41,14 +42,13 @@
     <!-- 食事の追加 -->
     <div>
       食事名:
-      <input type="text" id="textBox" v-model="food">
+      <input type="text" id="textBox" v-model.trim="food">
       <button @click="foodAdd" type="submit" class="changeButton">追加</button>
     </div>
   </div>
 </template>
 
 <script>
-
 
 export default {
   data(){
@@ -59,47 +59,33 @@ export default {
           {value:1, list:"完食"}
         ],
         displayNumber:-1,
-        foodLists:[],
-        food:'',  
       }
     },  
-
+      
   methods:{
-      //foodListの追加処理
+    //foodListの追加処理
       foodAdd(){
         //追加する食事名のfoodを参照
         //入力がない場合は何もしない
-        if(!this.food){
+        if(!this.$store.state.food){
           alert("食事名を追加してください")
           return
         }
-        this.foodLists.push({          //{ID,食事名、状態}オブジェクトをfoodListsに追加
-          id:this.$store.foodListStorage.uid++,       
-          food:this.food,            
-          state:0                      //デフォルトは食事中なので0
+        this.$store.foodLists.push({         //{ID,食事名、状態}オブジェクトをfoodListsに追加
+           id: this.$store.state.number++,
+           food: this.$store.state.food,                    //デフォルトは食事中なので0
+           status: 0,
         })
-          this.food.value=''                //form要素を空にする
+        this.$store.state.food=''                //form要素を空にする
       },
-      changeState(item){      //状態の変更処理   
-        item.state = item.state ? 0 : 1
+  },
+      changeStatus(item){      //状態の変更処理   
+        item.status = item.status ? 0 : 1
       },
       remove(item){
-        const index = this.foodLists.indexOf(item)  //itemの中の何番目をindexとする
-        this.foodLists.splice(index,1)            //上記で指定した番号の要素を削除
+        const index = this.$store.state.foodLists.indexOf(item)  //itemの中の何番目をindexとする
+        this.$store.state.foodLists.splice(index,1)            //上記で指定した番号の要素を削除
       }
-
-  },
-  watch:{                             //ローカルストレージ内では保存されていない。
-    foodLists:{                       //foodListsのデータの内容が変わると自動的に保存してくれる    
-      handler(foodLists){
-        this.$store.foodListStorage.save(foodLists)
-      },
-      deep: true
-    }
-  },
-  created(){
-    this.foodLists = this.$store.foodListStorage.fetch()
-  }
 }
 </script>
 

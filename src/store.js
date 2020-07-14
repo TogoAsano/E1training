@@ -1,5 +1,5 @@
 import Vue from "Vue";
-import Vuex from "Vuex";
+import Vuex from "vuex";
 
 Vue.use(Vuex);
 
@@ -18,8 +18,8 @@ export default new Vuex.Store({
             //1番の中のfoodListにデータを追加する
             state.foodList.push(value)
         },
-        //remove(id){
-        //    this.foodList = this.foodList.filter("foodId") !== id
+        //remove(state,id){
+        //    state.foodList = state.foodList.filter("foodId") !== id
         //}
     } 
 })    

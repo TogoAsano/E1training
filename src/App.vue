@@ -1,15 +1,15 @@
-<template>
-  <div> <!-- radioボタンによってリストに表示するものを限定する -->
+ <template>
+  <div>
+    <!-- radioボタンによってリストに表示するものを限定する -->
     <h1>お昼ごはんリスト</h1>
-    <lavel v-for="(option,index) in options" :key="index">
-      <input 
-      type="radio"
-      :value="option.value"
-      v-model="displayNumber"
-      >{{option.list}}
-    </lavel> <!-- ({{number}}件を表示) -->
+    <label v-for="(option,index) in options" :key="index">
+      <input type="radio" :value="option.value" v-model="displayNumber" />
+      {{option.list}}
+    </label>
+    <!-- ({{number}}件を表示) -->
 
-    <table border="1" id="targetTable"> <!--食事リストを表示するテーブル -->
+    <table border="1" id="targetTable">
+      <!--食事リストを表示するテーブル -->
       <thead>
         <tr>
           <th id="numberHeader">ID</th>
@@ -19,19 +19,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.id">
+        <tr v-for="food in foodList" :key="food.id">
           <!-- v-for-->
-          <th>{{item.id}}</th>
-          <td class="foodName">{{item.food}}</td>
+          <th>{{food.id}}</th>
+          <td class="foodName">{{food.foodName}}</td>
           <td class="changeButton">
-            <button @click="changeStatus(item)">
-             {{lavels[item.status]}}
-            </button>
+            <button>{{ convertStatus(food.status) }}</button>
           </td>
           <td class="changeButton">
-            <button @click.ctrl="remove(item)">
-              削除
-            </button>
+            <button>削除</button>
           </td>
         </tr>
       </tbody>
@@ -42,56 +38,63 @@
     <!-- 食事の追加 -->
     <div>
       食事名:
-      <input type="text" id="textBox" v-model.trim="food">
+      <input type="text" id="textBox" v-model.trim="foodName" />
       <button @click="foodAdd" type="submit" class="changeButton">追加</button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 
 export default {
-  data(){
-    return{
-        options : [
-          {value:-1 , list:"すべて"},
-          {value:0, list: "食事中"},
-          {value:1, list:"完食"}
-        ],
-        displayNumber:-1,
-      }
-    },  
-      
-  methods:{
-    //foodListの追加処理
-      foodAdd(){
-        //追加する食事名のfoodを参照
-        //入力がない場合は何もしない
-        if(!this.$store.state.food){
-          alert("食事名を追加してください")
-          return
-        }
-        this.$store.foodLists.push({         //{ID,食事名、状態}オブジェクトをfoodListsに追加
-           id: this.$store.state.number++,
-           food: this.$store.state.food,                    //デフォルトは食事中なので0
-           status: 0,
-        })
-        this.$store.state.food=''                //form要素を空にする
-      },
+  data() {
+    return {
+      options: [
+        { value: -1, list: "すべて" },
+        { value: 0, list: "食事中" },
+        { value: 1, list: "完食" }
+      ],
+      displayNumber: -1,
+      foodName: "",
+      incrementalId: 0,
+    };
   },
-      changeStatus(item){      //状態の変更処理   
-        item.status = item.status ? 0 : 1
-      },
-      remove(item){
-        const index = this.$store.state.foodLists.indexOf(item)  //itemの中の何番目をindexとする
-        this.$store.state.foodLists.splice(index,1)            //上記で指定した番号の要素を削除
+  computed: {
+    ...mapGetters({
+      foodList: 'foodList'
+    }),
+    convertStatus() {
+      return (status) => {
+          return this.options.find((option) => option.value === status).list
+        }
       }
-}
+  },
+  methods: {
+    //foodListの追加処理
+    foodAdd() {
+      //追加する食事名のfoodを参照
+      //入力がない場合は何もしない
+      if (!this.foodName) {
+        alert("食事名を入力してください");
+        return;
+      }
+      const newFood = {
+        foodName: this.foodName,
+        id: this.incrementalId++,
+        status: 0
+      };
+      // storeにデータを格納する
+      this.$store.commit("addFood", newFood);
+      this.foodName = "";
+    }
+  }
+};
 </script>
 
 <style scoped>
-div{
-  margin:200px 500px;
+div {
+  margin: 200px 500px;
 }
 table {
   border: 1px solid /* transparent */;
@@ -113,7 +116,7 @@ td {
   padding-right: 600px;
 }
 #textBox {
-  border : 1px solid #a9a9a9;
+  border: 1px solid #a9a9a9;
 }
 .changeButton {
   color: whitesmoke;

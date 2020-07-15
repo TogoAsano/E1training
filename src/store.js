@@ -20,6 +20,10 @@ export default new Vuex.Store({
         },
     //    changeStatus(state,statusId){
             // const id = statusId.id           
+            // state.foodList = state.foodList.filter((food) => food.id!== id) これをやるとfoodListを戻せなくなる？
+            // foodList.forEach((foodName,id,status)) =>{
+            // status
+            //})
             // if(state.foodList.options.status == 0){
             //    state.foodList.options.status = 1
             //}else{
@@ -30,7 +34,7 @@ export default new Vuex.Store({
         remove(state,deleateId){
             //削除するidを受け取りそのidを削除する。その後foodListに上書きする
             const id = deleateId.id
-            state.foodList = state.foodList.filter((food) => food.id!== id)//(food)=>が分からないfood.idは分かるが
+            state.foodList = state.foodList.filter((food) => food.id!== id)
         }
     }
 })    

@@ -1,5 +1,5 @@
  <template>
-  <div>
+  <div id="positionCenter">
     <!-- radioボタンによってリストに表示するものを限定する -->
     <h1>お昼ごはんリスト</h1>
     <label v-for="(option,index) in options" :key="index">
@@ -19,17 +19,18 @@
         </tr>
       </thead>
       <tbody>
+        <transition-group name="fade">
         <tr v-for="food in foodList" :key="food.id">
-          <!-- v-for-->
           <th>{{food.id}}</th>
-          <td class="foodName">{{food.foodName}}</td>
-          <td class="changeButton">
-            <button>{{ convertStatus(food.status) }}</button>
+          <td class="foodName" :key="transitionFade">{{food.foodName}}</td>
+          <td :key="transitionFade"> 
+            <button class="changeButton">{{ convertStatus(food.status) }}</button>
           </td>
-          <td class="changeButton">
-            <button>削除</button>
+          <td :key="transitionFade">
+            <button @click.ctrl="remove(food.id)" class="changeButton">削除</button>
           </td>
         </tr>
+        </transition-group>
       </tbody>
     </table>
     <!-- キー修飾子を使用することでコントロールキーを押しながらでないと削除できない -->
@@ -38,7 +39,7 @@
     <!-- 食事の追加 -->
     <div>
       食事名:
-      <input type="text" id="textBox" v-model.trim="foodName" />
+      <input type="text" id="textBox" v-model="foodName">
       <button @click="foodAdd" type="submit" class="changeButton">追加</button>
     </div>
   </div>
@@ -62,13 +63,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      foodList: 'foodList'
+      foodList: 'foodList',
     }),
     convertStatus() {
       return (status) => {
           return this.options.find((option) => option.value === status).list
         }
-      }
+      },
+   /* remove(id) {
+          const deleateId = {
+          id : "food.id",
+          }
+          this.$store.commit("remove",deleateId)
+    }*/
   },
   methods: {
     //foodListの追加処理
@@ -93,7 +100,33 @@ export default {
 </script>
 
 <style scoped>
-div {
+.fade-enter{
+/*追加されるときの最初の状態*/
+opacity: 0;
+}
+.fade-enter-active{
+/*追加されるときのトランジションの状態*/
+transition: opacity 1s;
+}
+.fade-enter-to{
+/* 追加されるときの最後の状態 */
+opacity: 1;
+}
+.fade-leave{
+/* 削除されるときの最初の状態 */
+opacity: 1;
+}
+.fade-leave-to-active{
+/* 削除されるときのトランジションの状態 */
+transition: opacity 0.5s;
+}
+.fade-leave-to{
+/* 削除されるときの最後の状態 */
+opacity: 0;
+}
+
+
+#positionCenter {
   margin: 200px 500px;
 }
 table {
@@ -105,15 +138,14 @@ th {
   padding-top: 5px;
   padding-bottom: 5px;
 }
-/* #numberHeader {
-} */
 td {
   text-align: center;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 .foodName {
-  padding-right: 600px;
+  padding-right: 300px;
+  padding-left:300px;
 }
 #textBox {
   border: 1px solid #a9a9a9;

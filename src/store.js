@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state:{
-        foodLists:[]
+        foodList:[]
     },
     getters:{
         foodList:(state) => state.foodList
@@ -18,8 +18,11 @@ export default new Vuex.Store({
             //1番の中のfoodListにデータを追加する
             state.foodList.push(value)
         },
-        //remove(state,id){
-        //    state.foodList = state.foodList.filter("foodId") !== id
-        //}
-    } 
+        // changeStatus(){
+
+        // },
+        remove(state,id){
+            state.foodList = state.foodList.filter("foodId" !== id)
+        }
+    }
 })    

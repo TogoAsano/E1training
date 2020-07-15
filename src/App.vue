@@ -8,7 +8,7 @@
     </label>
     <!-- ({{number}}件を表示) -->
 
-    <table border="1" id="targetTable">
+    <table border="1">
       <!--食事リストを表示するテーブル -->
       <thead>
         <tr>
@@ -19,12 +19,12 @@
         </tr>
       </thead>
       <tbody>
-        <transition-group name="fade" tag="p">
+        <transition-group name="fade" tag="table">
         <tr v-for="food in foodList" :key="food.id">
           <th>{{food.id}}</th>
           <td class="foodName">{{food.foodName}}</td>
           <td> 
-            <button class="changeButton">{{ convertStatus(food.status) }}</button>
+            <button @click="changeStatus(food.id)" class="changeButton">{{ convertStatus(food.status) }}</button>
           </td>
           <td>
             <button @click.ctrl="remove(food.id)" class="changeButton">削除</button>
@@ -66,16 +66,12 @@ export default {
       foodList: 'foodList',
     }),
     convertStatus() {
-      return (status) => {
-          return this.options.find((option) => option.value === status).list
-        }
-      },
-   /* remove(id) {
-          const deleateId = {
-          id : "food.id",
-          }
-          this.$store.commit("remove",deleateId)
-    }*/
+      return (status) => {                        //この部分が理解できていない。
+          return this.options.find((option) => {
+            return option.value===status;
+          }).list
+      }
+    },
   },
   methods: {
     //foodListの追加処理
@@ -94,12 +90,32 @@ export default {
       // storeにデータを格納する
       this.$store.commit("addFood", newFood);
       this.foodName = "";
+    },
+    changeStatus(id){
+      const statusId = {
+          id: id
+        };
+        console.log(id,'changedStatus')
+            this.$store.commit("changeStatus",statusId)
+    },
+    remove(id) {
+      var result = window.confirm('本当に削除しますか？')
+      if(result){
+        const deleateId = {
+          id: id // ES6ではid:idでなくidのみでok
+        };
+        console.log(id,'removeComannd')
+            this.$store.commit("remove",deleateId)
+      }        
     }
   }
 };
 </script>
 
 <style scoped>
+.fade-move{
+  transition: transform 10s ;
+}
 .fade-enter{
 /*追加されるときの最初の状態*/
 opacity: 0;
@@ -126,11 +142,13 @@ opacity: 0;
 }
 
 
-#positionCenter {
+#positionCenter { 
   margin: 200px 500px;
 }
 table {
-  border: 1px solid /* transparent */;
+  /* border: 5px solid; */
+  width:700px;
+  table-layout: fixed;
 }
 
 th {
@@ -143,10 +161,12 @@ td {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-.foodName {
-  padding-right: 300px;
-  padding-left:300px;
-}
+
+
+/* .foodName { */
+  /* padding-right: 300px; */
+  /* padding-left:300px; */
+/* } */
 #textBox {
   border: 1px solid #a9a9a9;
 }

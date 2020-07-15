@@ -18,11 +18,19 @@ export default new Vuex.Store({
             //1番の中のfoodListにデータを追加する
             state.foodList.push(value)
         },
-        // changeStatus(){
-
+    //    changeStatus(state,statusId){
+            // const id = statusId.id           
+            // if(state.foodList.options.status == 0){
+            //    state.foodList.options.status = 1
+            //}else{
+            //    state.foodList.options.status = 0
+            //}
+            // state.foodList = state.foodList
         // },
-        remove(state,id){
-            state.foodList = state.foodList.filter("foodId" !== id)
+        remove(state,deleateId){
+            //削除するidを受け取りそのidを削除する。その後foodListに上書きする
+            const id = deleateId.id
+            state.foodList = state.foodList.filter((food) => food.id!== id)//(food)=>が分からないfood.idは分かるが
         }
     }
 })    

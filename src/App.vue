@@ -19,14 +19,14 @@
         </tr>
       </thead>
       <tbody>
-        <transition-group name="fade">
+        <transition-group name="fade" tag="p">
         <tr v-for="food in foodList" :key="food.id">
           <th>{{food.id}}</th>
-          <td class="foodName" :key="transitionFade">{{food.foodName}}</td>
-          <td :key="transitionFade"> 
+          <td class="foodName">{{food.foodName}}</td>
+          <td> 
             <button class="changeButton">{{ convertStatus(food.status) }}</button>
           </td>
-          <td :key="transitionFade">
+          <td>
             <button @click.ctrl="remove(food.id)" class="changeButton">削除</button>
           </td>
         </tr>

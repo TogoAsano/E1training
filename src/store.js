@@ -18,19 +18,43 @@ export default new Vuex.Store({
             //1番の中のfoodListにデータを追加する
             state.foodList.push(value)
         },
-    //    changeStatus(state,statusId){
-            // const id = statusId.id           
-            // state.foodList = state.foodList.filter((food) => food.id!== id) これをやるとfoodListを戻せなくなる？
-            // foodList.forEach((foodName,id,status)) =>{
-            // status
-            //})
-            // if(state.foodList.options.status == 0){
-            //    state.foodList.options.status = 1
-            //}else{
-            //    state.foodList.options.status = 0
-            //}
-            // state.foodList = state.foodList
-        // },
+        changeStatus(state,statusId){
+            // 設計としては以下の流れです
+            // 1:新しいfoodList用の配列を用意する
+            // 2:ステータスがマジックナンバーにならないように変数に意味を持たせる 
+            //   ※マジックナンバーがわからなければ検索してみてください
+            // 3:現在のフードリストをループして現在ループしている要素を分かりやすいように変数に入れておく
+            // 4:変数に入れたループ要素が引数で受けたidと等しいか判定する
+            //   ※注１：もしここで等しくないと判断されたら、何もせずに新しいフードリストに追加する
+            // 5:4でidが等しいと判断されたら次はステータスをチェックし、ループ要素のステータスを完食にしてから
+            //   新しいフードリストに追加する
+            // 6:最後に新しいフードリストと現在のフードリストを入れ替える
+
+            // 1
+            const newAFoodList = [] 
+            const id = statusId.id
+            // 2
+            const eatingStatus = 0 
+            // 2
+            const ateSatus = 1 
+
+            for (let i = 0; i < state.foodList.length; i++) {
+                // 3
+                const loopTarget = state.foodList[i]
+                // 4
+                if (loopTarget.id === id) {
+                    // 5
+                    if (loopTarget.status=== eatingStatus) {
+                        // 5
+                        loopTarget.status = ateSatus
+                    }
+                }
+                // 5
+                newAFoodList.push(loopTarget)
+            }
+            // 6
+            state.foodList = newAFoodList
+        },
         remove(state,deleateId){
             //削除するidを受け取りそのidを削除する。その後foodListに上書きする
             const id = deleateId.id

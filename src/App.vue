@@ -3,10 +3,10 @@
     <!-- radioボタンによってリストに表示するものを限定する -->
     <h1>お昼ごはんリスト</h1>
     <label v-for="(option,index) in options" :key="index">
-      <input type="radio" :value="option.value" v-model="displayNumber" />
+      <input type="radio" :value="option.value" v-model="displayNumber">
       {{option.list}}
     </label>
-    <!-- ({{number}}件を表示) -->
+    ({{computedFoodList.length}}件を表示) 
 
     <table border="1">
       <!--食事リストを表示するテーブル -->
@@ -70,6 +70,21 @@ export default {
           return this.options.find((option) => {
             return option.value===status;
           }).list
+      }
+    },
+    computedFoodList:()=>{
+      //データdisplayNumberが-1ならすべてそれ以外なら
+      //displayNumberとstatusが一致するものだけを絞り込む
+      if(this.displayNumber == 0){
+        this.$store.state.foodlist = this.$store.state.foodlist.filter(   //ここではfoodListにアクセスできない？
+          (status) => {                                                   //順番に動作していくのに一番上にあったら、そもそも空のfoodListにアクセスしている
+            return status === 0;                                          //statusが0や1のもののidをstoreに送ってfilterで削減するが方法だろうか？
+        })                                                                //その場合はcomputedよりmethodsで？
+      }else if(this.displayNumber == 1){                                  //ただ、radioボタンの場合method化できるのか？引数としてdisplayNumberを送るメソッドの作成？
+        this.$store.state.foodlist = this.$store.state.foodlist.filter(
+          (status) => {
+            return status === 1; 
+        })
       }
     },
   },

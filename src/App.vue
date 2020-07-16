@@ -6,7 +6,7 @@
       <input type="radio" :value="option.value" v-model="displayNumber">
       {{option.list}}
     </label>
-    ({{computedFoodList.length}}件を表示) 
+    <!-- ({{computedFoodList.length}}件を表示)  -->
 
     <table border="1">
       <!--食事リストを表示するテーブル -->
@@ -22,7 +22,7 @@
         <transition-group name="fade" tag="table">
         <tr v-for="food in foodList" :key="food.id">
           <th>{{food.id}}</th>
-          <td class="foodName">{{food.foodName}}</td>
+          <td>{{food.foodName}}</td>
           <td> 
             <button @click="changeStatus(food.id)" class="changeButton">{{ convertStatus(food.status) }}</button>
           </td>
@@ -72,9 +72,14 @@ export default {
           }).list
       }
     },
-    computedFoodList:()=>{
+    /* computedFoodList:()=>{
       //データdisplayNumberが-1ならすべてそれ以外なら
       //displayNumberとstatusが一致するものだけを絞り込む
+      /*最終的な表示について
+      すべて、食事中、完食の３つにのラジオボタンを押したときに、
+      foodListのテーブルからそれに該当する状態のものだけを表示するようにする
+      食事中を選択した場合、食事中状態のものだけを表示。そのときdisplayNumberは0となっている*/
+      /*
       if(this.displayNumber == 0){
         this.$store.state.foodlist = this.$store.state.foodlist.filter(   //ここではfoodListにアクセスできない？
           (status) => {                                                   //順番に動作していくのに一番上にあったら、そもそも空のfoodListにアクセスしている
@@ -85,9 +90,8 @@ export default {
           (status) => {
             return status === 1; 
         })
-      }
-    },
-  },
+      }*/
+     },
   methods: {
     //foodListの追加処理
     foodAdd() {
@@ -137,7 +141,7 @@ opacity: 0;
 }
 .fade-enter-active{
 /*追加されるときのトランジションの状態*/
-transition: opacity 1s;
+transition: opacity 1.5s;
 }
 .fade-enter-to{
 /* 追加されるときの最後の状態 */
@@ -149,7 +153,7 @@ opacity: 1;
 }
 .fade-leave-to-active{
 /* 削除されるときのトランジションの状態 */
-transition: opacity 0.5s;
+transition: opacity 5s;
 }
 .fade-leave-to{
 /* 削除されるときの最後の状態 */
@@ -176,12 +180,6 @@ td {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-
-
-/* .foodName { */
-  /* padding-right: 300px; */
-  /* padding-left:300px; */
-/* } */
 #textBox {
   border: 1px solid #a9a9a9;
 }

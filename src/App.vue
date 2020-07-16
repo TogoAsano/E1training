@@ -6,7 +6,7 @@
       <input type="radio" :value="option.value" v-model="displayNumber">
       {{option.list}}
     </label>
-    <!-- ({{computedFoodList.length}}件を表示)  -->
+    ({{computedFoodList.length}}件を表示)
     <!-- 上記にテーブルに表示されている件数を表示させる -->
     <table border="1">
       <!--食事リストを表示するテーブル -->
@@ -20,7 +20,7 @@
       </thead>
       <tbody>
         <transition-group name="fade" tag="table">
-        <tr v-for="food in foodList" :key="food.id">
+        <tr v-for="food in computedFoodList" :key="food.id">
           <th>{{food.id}}</th>
           <td>{{food.foodName}}</td>
           <td> 
@@ -71,28 +71,39 @@ export default {
             return option.value===status;
           }).list
       }
+    }, 
+    computedFoodList(){
+      const all = -1;
+      const eating = 0;
+      const done = 1;
+      let filterFoodList = [];
+      switch(this.displayNumber){
+        case all:
+          filterFoodList = this.foodList;
+          break;
+        case eating:
+          filterFoodList = this.getTargetList(eating);
+          break;
+        case done:
+          filterFoodList = this.getTargetList(done);
+          break;
+          default:
+            return[]  
+      }
+      return filterFoodList;
     },
-    /* computedFoodList:()=>{
-      //データdisplayNumberが-1ならすべてそれ以外なら
-      //displayNumberとstatusが一致するものだけを絞り込む
-      /*最終的な表示について
-      すべて、食事中、完食の３つにのラジオボタンを押したときに、
-      foodListのテーブルからそれに該当する状態のものだけを表示するようにする
-      食事中を選択した場合、食事中状態のものだけを表示。そのときdisplayNumberは0となっている*/
-      /*
-      if(this.displayNumber == 0){
-        this.$store.state.foodlist = this.$store.state.foodlist.filter(   //ここではfoodListにアクセスできない？
-          (status) => {                                                   //順番に動作していくのに一番上にあったら、そもそも空のfoodListにアクセスしている
-            return status === 0;                                          //statusが0や1のもののidをstoreに送ってfilterで削減するが方法だろうか？
-        })                                                                //その場合はcomputedよりmethodsで？
-      }else if(this.displayNumber == 1){                                  //ただ、radioボタンの場合method化できるのか？引数としてdisplayNumberを送るメソッドの作成？
-        this.$store.state.foodlist = this.$store.state.foodlist.filter(
-          (status) => {
-            return status === 1; 
-        })
-      }*/
-     },
+  },
   methods: {
+    getTargetList(status){
+      const list = [];
+      for(let i = 0; i < this.foodList.length; i++){
+        const target = this.foodList[i];
+        if(target.status === status){
+          list.push(target)
+        }
+      }
+      return list;
+    },
     //foodListの追加処理
     foodAdd() {
       //追加する食事名のfoodを参照
@@ -133,7 +144,7 @@ export default {
 
 <style scoped>
 .fade-move{
-  transition: transform 10s ;
+  transition: transform 0.5s ;
 }
 .fade-enter{
 /*追加されるときの最初の状態*/
@@ -153,7 +164,7 @@ opacity: 1;
 }
 .fade-leave-to-active{
 /* 削除されるときのトランジションの状態 */
-transition: opacity 5s;
+transition: opacity 1s;
 }
 .fade-leave-to{
 /* 削除されるときの最後の状態 */

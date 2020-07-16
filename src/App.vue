@@ -7,7 +7,7 @@
       {{option.list}}
     </label>
     <!-- ({{computedFoodList.length}}件を表示)  -->
-
+    <!-- 上記にテーブルに表示されている件数を表示させる -->
     <table border="1">
       <!--食事リストを表示するテーブル -->
       <thead>

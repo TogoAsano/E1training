@@ -12,16 +12,18 @@
       <!--食事リストを表示するテーブル -->
       <thead>
         <tr>
-          <th id="numberHeader">ID</th>
-          <th class="foodName">食事名</th>
+          <th>ID</th>
+          <th>お名前</th>
+          <th>食事名</th>
           <th>状態</th>
           <th>ー</th>
         </tr>
       </thead>
       <tbody>
         <transition-group name="fade" tag="table">
-        <tr v-for="food in computedFoodList" :key="food.id">
+        <tr v-for="food in computedFoodList" :key="food.id" class="table-Border-Line">
           <th>{{food.id}}</th>
+          <td>{{food.humanName}}</td>
           <td>{{food.foodName}}</td>
           <td> 
             <button @click="changeStatus(food.id)" class="changeButton">{{ convertStatus(food.status) }}</button>
@@ -37,9 +39,12 @@
     <p>※削除ボタンはコントロールキーを押しながらクリックしてください</p>
     <h2>新しい食事リストを追加</h2>
     <!-- 食事の追加 -->
-    <div>
+    <div id="add">
+      お名前:
+      <input type="text" class="textBox" v-model="humanName">
+      <br>
       食事名:
-      <input type="text" id="textBox" v-model="foodName">
+      <input type="text" class="textBox" v-model="foodName">
       <button @click="foodAdd" type="submit" class="changeButton">追加</button>
     </div>
   </div>
@@ -57,6 +62,7 @@ export default {
         { value: 1, list: "完食" }
       ],
       displayNumber: -1,
+      humanName:"",
       foodName: "",
       incrementalId: 0,
     };
@@ -106,20 +112,28 @@ export default {
     },
     //foodListの追加処理
     foodAdd() {
-      //追加する食事名のfoodを参照
+      //追加する名前と食事名のfoodを参照
       //入力がない場合は何もしない
-      if (!this.foodName) {
-        alert("食事名を入力してください");
+      if (!(this.foodName && this.humanName)) {
+        alert("お名前もしくは食事名の記入がありません");
         return;
       }
       const newFood = {
+        humanName: this.humanName,
         foodName: this.foodName,
         id: this.incrementalId++,
         status: 0
       };
       // storeにデータを格納する
       this.$store.commit("addFood", newFood);
+      this.humanName = "";
       this.foodName = "";
+      var yasaitottaka = confirm('野菜とりましたか？')
+      if(!yasaitottaka){
+        for(let i = 0; i < 3 ; i++){
+          alert("野菜たべなぁ～")
+        }
+      }  
     },
     changeStatus(id){
       const statusId = {
@@ -136,6 +150,7 @@ export default {
         };
         console.log(id,'removeComannd')
             this.$store.commit("remove",deleateId)
+        // this.incrementalId -=1;            
       }        
     }
   }
@@ -173,14 +188,16 @@ opacity: 0;
 
 
 #positionCenter { 
-  margin: 200px 500px;
+  margin: auto;
 }
 table {
   /* border: 5px solid; */
   width:700px;
   table-layout: fixed;
 }
-
+.table-Border-Line{
+  border:5px black;
+}
 th {
   color: #0099e4;
   padding-top: 5px;
@@ -191,7 +208,7 @@ td {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-#textBox {
+.textBox {
   border: 1px solid #a9a9a9;
 }
 .changeButton {

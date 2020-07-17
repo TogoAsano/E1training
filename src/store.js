@@ -36,7 +36,7 @@ export default new Vuex.Store({
             // 2
             const eatingStatus = 0 
             // 2
-            const ateSatus = 1 
+            const ateStatus = 1 
 
             for (let i = 0; i < state.foodList.length; i++) {
                 // 3
@@ -46,7 +46,10 @@ export default new Vuex.Store({
                     // 5
                     if (loopTarget.status=== eatingStatus) {
                         // 5
-                        loopTarget.status = ateSatus
+                        loopTarget.status = ateStatus
+                    }else if(loopTarget.status=== ateStatus){
+                        // 5
+                        loopTarget.status = eatingStatus
                     }
                 }
                 // 5
@@ -59,6 +62,10 @@ export default new Vuex.Store({
             //削除するidを受け取りそのidを削除する。その後foodListに上書きする
             const id = deleateId.id
             state.foodList = state.foodList.filter((food) => food.id!== id)
+            //  for(let i = id  ; i < state.foodList.length ; i++){
+            //     const adjustFoodList = state.foodList[i]
+            //     adjustFoodList.id -= 1
+            // }
         }
     }
 })    

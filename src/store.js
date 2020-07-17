@@ -66,6 +66,36 @@ export default new Vuex.Store({
             //     const adjustFoodList = state.foodList[i]
             //     adjustFoodList.id -= 1
             // }
-        }
-    }
+        },
+        // ascendingSort(state){
+        //     function compareFunc(a, b) {
+        //         return a - b;
+        //       }
+        //       state.foodList.sort(compareFunc);
+        // },
+        // descendingSort(state){
+        //     function compareFunc(a, b) {
+        //         return b - a;
+        //       }
+        //       state.foodList.sort(compareFunc);
+        // }
+        ascendingSort(state){
+            state.foodList = state.foodList.sort(function(a,b){
+                if(a.status > b.status){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            })
+        },
+        descendingSort(state){
+            state.foodList = state.foodList.sort(function(a,b){
+                if(a.status < b.status){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            })
+        },
+    }    
 })    

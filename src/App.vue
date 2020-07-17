@@ -8,11 +8,14 @@
     </label>
     ({{computedFoodList.length}}件を表示)
     <!-- 上記にテーブルに表示されている件数を表示させる -->
+    <button @click="ascendingSort()" class="sortButton">昇順（食事中を上に）</button>
+    <button @click="descendingSort()" class="sortButton">降順（完食を上に）</button>
     <table border="1">
       <!--食事リストを表示するテーブル -->
       <thead>
         <tr>
-          <th>ID</th>
+          <th>Number</th>
+          <!-- <th>ID</th> -->
           <th>お名前</th>
           <th>食事名</th>
           <th>状態</th>
@@ -21,8 +24,9 @@
       </thead>
       <tbody>
         <transition-group name="fade" tag="table">
-        <tr v-for="food in computedFoodList" :key="food.id" class="table-Border-Line">
-          <th>{{food.id}}</th>
+        <tr v-for="(food, number) in computedFoodList" :key="food.id" class="table-Border-Line">
+          <th>{{number + 1}}</th>
+          <!-- <th>{{food.id}}</th> -->
           <td>{{food.humanName}}</td>
           <td>{{food.foodName}}</td>
           <td> 
@@ -45,7 +49,7 @@
       <br>
       食事名:
       <input type="text" class="textBox" v-model="foodName">
-      <button @click="foodAdd" type="submit" class="changeButton">追加</button>
+      <button @click="foodAdd" type="submit" class="submitButton">追加</button>
     </div>
   </div>
 </template>
@@ -61,10 +65,15 @@ export default {
         { value: 0, list: "食事中" },
         { value: 1, list: "完食" }
       ],
+      // sorts:[
+      //   {value: 0, list:"↑"},
+      //   {value: 1, list:"↓"}
+      // ],
       displayNumber: -1,
       humanName:"",
       foodName: "",
       incrementalId: 0,
+
     };
   },
   computed: {
@@ -72,10 +81,15 @@ export default {
       foodList: 'foodList',
     }),
     convertStatus() {
-      return (status) => {                        //この部分が理解できていない。
-          return this.options.find((option) => {
-            return option.value===status;
-          }).list
+      return (status) => {                        
+          return this.options.find((option) => option.value===status).list
+          // for (let i = 0; i < this.options.length; i++) {
+          //   const target = this.options[i]
+          //   if (target.value === status) {
+          //     return target.list
+          //   }
+          // }
+          // return ''
       }
     }, 
     computedFoodList(){
@@ -152,7 +166,13 @@ export default {
             this.$store.commit("remove",deleateId)
         // this.incrementalId -=1;            
       }        
-    }
+    },
+    ascendingSort(){
+      this.$store.commit("ascendingSort")
+    },
+    descendingSort(){
+      this.$store.commit("descendingSort")
+    },
   }
 };
 </script>
@@ -173,20 +193,6 @@ transition: opacity 1.5s;
 /* 追加されるときの最後の状態 */
 opacity: 1;
 }
-.fade-leave{
-/* 削除されるときの最初の状態 */
-opacity: 1;
-}
-.fade-leave-to-active{
-/* 削除されるときのトランジションの状態 */
-transition: opacity 1s;
-}
-.fade-leave-to{
-/* 削除されるときの最後の状態 */
-opacity: 0;
-}
-
-
 #positionCenter { 
   margin: auto;
 }
@@ -211,11 +217,25 @@ td {
 .textBox {
   border: 1px solid #a9a9a9;
 }
-.changeButton {
+.sortButton{
+  color: whitesmoke;
+  background-color: gray;
+  border-radius: 15px;
+  border: 1px solid gray;
+  margin-left: 5px;
+  margin-bottom : 5px;
+}
+.submitButton {
   color: whitesmoke;
   background-color: #0099e4;
   border-radius: 15px;
   border: 1px solid #0099e4;
   margin-left: 5px;
+}
+.changeButton{
+  color: whitesmoke;
+  background-color: #0099e4;
+  border-radius: 15px;
+  border: 1px solid #0099e4;
 }
 </style>
